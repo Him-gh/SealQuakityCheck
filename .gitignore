@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# 模型文件
+*.pth
+*.pt
+*.onnx
+*.weights
+*.bin
+
+# 日志和数据
+log/*.txt
+log/*.log
+!log/.gitkeep
+
+**/checkpoint/*
+!**/checkpoint/.gitkeep
+
+train/data/raw/IR/*
+!train/data/raw/IR/.gitkeep
+train/data/raw/YB/*
+!train/data/raw/YB/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.log
+*.tmp
+.DS_Store
+*.bak
+*.orig

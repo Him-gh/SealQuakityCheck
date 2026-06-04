@@ -1,0 +1,69 @@
+{
+    "IR": {
+        "ROI": [
+            20,
+            20,
+            390,
+            140
+        ],
+        "min_area": 500,
+        "model_path": "./checkpoint/Res18Unet_fine_tuning.pth"
+    },
+    "OCR": {
+        "ROI": [
+            0,
+            275,
+            175,
+            299
+        ],
+        "min_area": 0,
+        "wh_ratio": [
+            0.2,
+            5.0
+        ],
+        "template_dir": "./utils/template"
+    },
+    "SED": {
+        "ROI": [
+            200,
+            500,
+            2400,
+            1700
+        ],
+        "target_size": [
+            2448,
+            2048
+        ],
+        "conf_threshold": 0.3,
+        "sed_conf": 0.3,
+        "fod_conf": 0.65,
+        "model_path": "./checkpoint/yolov8n_4.pt"
+    },
+    "check": {
+        "Num": 1,
+        "W": [
+            300,
+            380
+        ],
+        "H": [
+            30,
+            60
+        ],
+        "Rect_Ratio": 0.8,
+        "Area": [
+            9000.0,
+            22800.0
+        ],
+        "Angle": 10.0,
+        "Smoothness": 0.75,
+        "Uniformity": 0.4,
+        "High_Temperature": [
+            100.0,
+            150.0
+        ],
+        "Low_Temperature": [
+            20.0,
+            30.0
+        ]
+    }
+}

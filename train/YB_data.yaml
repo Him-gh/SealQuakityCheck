@@ -1,0 +1,12 @@
+path: .
+
+train: ./data/raw/YB/images/train
+val: ./data/raw/YB/images/val
+
+
+nc: 2
+
+
+names:
+  0: sed
+  1: fod
