@@ -4,14 +4,12 @@ imgsz: (416,1088)
 batch: 4
 device: 0
 workers: 8
+
+lr0: 0.01
+lrf: 0.01
 rect: False
+
 degrees: 5,              
 scale: 0.5,
 translate: 0.1,
 fliplr: 0.5,
-pretrained: true
-optimizer: AdamW
-lr0: 0.01
-lrf: 0.01
-weight_decay: 0.0005
-exist_ok: false
