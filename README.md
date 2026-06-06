@@ -1,7 +1,7 @@
 # SealQuakityCheck - 封口质量检测系统(简化版)
 
-基于深度学习的工业封口质量检测系统(简化版)
-(去除IO模块,模拟相机)
+- 基于深度学习的工业封口质量检测系统(简化版)
+- (去除IO模块,模拟相机)
 
 ## 功能特性
 
@@ -21,5 +21,12 @@
 
 ## 安装依赖
 
-```bash
-pip install -r requirements.txt
+- 运行
+
+  ```bash
+  pip install -r requirements_base.txt
+- 运行+训练
+
+  ```bash
+  pip install -r requirements.txt
+  
