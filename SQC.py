@@ -54,7 +54,7 @@ class SQC:
             SED_image_path,
             self.SED_cfg.get("model_path",YOLO_PATH),
             self.SED_cfg.get("ROI",[100,200,1000,400]),
-            tuple(self.SED_cfg.get("target_size",(1024,1024)))
+            tuple(self.SED_cfg.get("classes_name",("SED","FOD")))
         )
 
         self.IR_and_OCR_result={}
@@ -84,7 +84,7 @@ class SQC:
         min_area=int(self.SED_cfg.get("min_area",20))
         #self.SED_result=self.SED.get_results(binary_threshold,score_threshold,close_kernel,min_area)"""
         self.SED_result=self.SED.get_yolo_results(
-            self.SED_cfg.get("conf_threshold",0.4),
+            self.SED_cfg.get("iou",0.4),
             self.SED_cfg.get("sed_conf",0.4),
             self.SED_cfg.get("fod_conf",0.7)
         )
@@ -106,7 +106,7 @@ class SQC:
     @property
     def show_sed_img(self)-> np.ndarray:
         """Return BGR img"""
-        return self.SED.img
+        return self.SED.show_img
     @property
     def show_ir_and_ocr_img(self)-> np.ndarray:
         """Return BGR img"""

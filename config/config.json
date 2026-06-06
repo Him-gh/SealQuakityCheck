@@ -30,14 +30,14 @@
             2400,
             1700
         ],
-        "target_size": [
-            2448,
-            2048
+        "classes_name": [
+            "SED",
+            "FOD"
         ],
-        "conf_threshold": 0.3,
+        "iou": 0.3,
         "sed_conf": 0.3,
         "fod_conf": 0.65,
-        "model_path": "./checkpoint/yolov8n_4.pt"
+        "model_path": "./checkpoint/yolov8n_4.onnx"
     },
     "check": {
         "Num": 1,
