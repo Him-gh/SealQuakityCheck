@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
 from typing import List,Tuple,Dict
-import torch 
 import os
-import torchvision.transforms as transforms
-from .Res18Unet import ResNet18Segmentation as R18U
+import onnxruntime as ort
+
 
 class IR:
     def __init__(
@@ -22,13 +21,9 @@ class IR:
         self.hsv_img=None
         self.image_path = None
 
-        self.model=R18U(num_classes=2,pretrained=False)
-        state_dict = torch.load(model_weights_path, map_location='cpu')
-        self.model.load_state_dict(state_dict)
-        self.model.eval()
-
+        self.session=ort.InferenceSession(model_weights_path)
         self.load_image(image_path)
-        del state_dict
+
 
     def reset_ROI(
             self,
@@ -43,6 +38,7 @@ class IR:
         x0, y0, x1, y1 = self.ROI
         h, w = self.original_img.shape[:2]
         assert 0 <= x0 < x1 < w and 0 <= y0 < y1 < h, "Invalid ROI"
+        assert (x1-x0)%32==0 and (y1-y0)%32==0,f"ROI H,W must be integer multiples of 32 ,but find H={y1-y0},W={x1-x0}"
         
         self.ROI_img = self.original_img[y0:y1, x0:x1]
         self.hsv_img = cv2.cvtColor(self.ROI_img, cv2.COLOR_BGR2HSV)
@@ -65,13 +61,19 @@ class IR:
         mask=self._get_mask()
         contours=self._get_contours(mask,min_area)
         bboxes,angles=self._get_bboxes(contours)
+        # draw ROI
         cv2.rectangle(self.img, (self.ROI[0],self.ROI[1]),(self.ROI[2],self.ROI[3]),(255,255,255),2)
         cv2.putText(self.img,"ROI",(self.ROI[0],self.ROI[1]+15), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 1)
         offset_x,offset_y=self.ROI[:2]
+        # draw bboxes
         for x,y,w,h in bboxes:
             x+=offset_x
             y+=offset_y
             cv2.rectangle(self.img, (x, y), (x + w, y + h), (255, 255, 255), 1)
+        # draw contours
+        contours_offset = [contour + np.array([offset_x, offset_y]) for contour in contours]
+        cv2.drawContours(self.img, contours_offset, -1, (0, 0, 0), 1)
+
         idx,Max_Area=self._get_max_area(contours)
         if idx<0:
             result={}
@@ -107,20 +109,29 @@ class IR:
         result['Uniformity']=Uniformity
         return result
     
-    @torch.no_grad
+    def softmax(
+            self,
+            x: np.ndarray, 
+            axis:int =-1
+    )-> np.ndarray:
+        exp_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
+        return exp_x / np.sum(exp_x, axis=axis, keepdims=True)
+    
     def _get_mask(
             self
     )-> np.ndarray:
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
-        normalize = transforms.Normalize(mean=mean, std=std)
 
         rgb=cv2.cvtColor(self.ROI_img, cv2.COLOR_BGR2RGB)
-        img_tensor = transforms.ToTensor()(rgb)
-        img_normalized = normalize(img_tensor).unsqueeze(0)
-        pred=self.model(img_normalized)
-        pred_mask = torch.argmax(pred, dim=1)
-        binary_img = (pred_mask == 1).squeeze(0).cpu().numpy().astype(np.uint8) * 255
+        img_array = rgb.astype(np.float32)/255.0
+        img_array = (img_array - mean) / std
+        img_tensor = img_array.transpose(2, 0, 1)[np.newaxis, :].astype(np.float32)
+        
+        outputs=self.session.run(None, {'input': img_tensor})
+        pred_mask = self.softmax(outputs[0], axis=1)
+        binary_img = (pred_mask[:,:,:,:].argmax(axis=1)).squeeze(0).astype(np.uint8) * 255
+
         return binary_img
     
     def _calculate_color_uniformity(

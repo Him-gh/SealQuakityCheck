@@ -1,13 +1,13 @@
 {
     "IR": {
         "ROI": [
-            20,
-            20,
-            390,
-            140
+            8,
+            16,
+            392,
+            144
         ],
         "min_area": 500,
-        "model_path": "./checkpoint/Res18Unet_fine_tuning.pth"
+        "model_path": "./checkpoint/Res18Unet_segmentation.onnx"
     },
     "OCR": {
         "ROI": [

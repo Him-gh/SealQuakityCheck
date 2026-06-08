@@ -1,13 +1,12 @@
 import json
-import cv2
 import os
 import numpy as np
 import core.IR as IR
 import core.OCR as OCR
 import core.SED as SED
 from typing import List,Tuple,Dict
-R18U_PATH="./checkpoint/Res18Unet_fine_tuning.pth"
-YOLO_PATH="./checkpoint/yolov8n_best.pt"
+R18U_PATH="./checkpoint/Res18Unet_segmentation.onnx"
+YOLO_PATH="./checkpoint/yolov8n_4.onnx"
 CONF_PATH="./config/config.json"
 
 

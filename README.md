@@ -25,7 +25,7 @@
 
   ```bash
   pip install -r requirements_base.txt
-- 运行+训练
+- 运行+训练+导出
 
   ```bash
   pip install -r requirements.txt
